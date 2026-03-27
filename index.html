@@ -2,622 +2,429 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestion des Données - Horizon Education</title>
-  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Horizon Class - Télécharger l'application</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary-blue: #00aaff;
+      --blue: #00aaff;
       --dark-blue: #0077cc;
-      --light-blue: #e6f7ff;
       --orange: #ff8c00;
-      --dark-orange: #e67e00;
+      --green: #00c896;
       --white: #ffffff;
-      --light-gray: #f5f5f5;
-      --gray: #666666;
-      --dark-gray: #333333;
-      --shadow: 0 8px 25px rgba(0,0,0,0.15);
-      --shadow-light: 0 4px 12px rgba(0,0,0,0.1);
-      --shadow-subtle: 0 2px 8px rgba(0,0,0,0.08);
-      --whatsapp-green: #128C7E;
-      --whatsapp-dark-green: #0C6B5F;
-      --warning-red: #e74c3c;
-      --warning-dark-red: #c0392b;
-      --success-green: #27ae60;
+      --off-white: #f8faff;
+      --gray: #6b7a99;
+      --dark: #1a1f36;
+      --whatsapp: #25D366;
+      --whatsapp-dark: #128C7E;
+      --shadow-card: 0 20px 60px rgba(0, 120, 255, 0.15);
+      --shadow-btn: 0 8px 24px rgba(0,0,0,0.18);
+      --radius: 20px;
+      --radius-btn: 14px;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      font-family: 'Nunito', sans-serif;
+      background: #0a0f1e;
     }
 
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: var(--white);
-      color: var(--dark-gray);
-      line-height: 1.6;
-      min-height: 100vh;
+    /* ─── SPLASH SCREEN ─── */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: #0a0f1e;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      z-index: 100;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
     }
 
-    /* Container principal avec largeur limitée */
-    .main-container {
-      width: 100%;
-      max-width: 550px;
+    #splash.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .splash-logo {
+      width: min(70vw, 280px);
+      opacity: 0;
+      transform: scale(0.7);
+      animation: splashReveal 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+    }
+
+    .splash-pulse {
+      position: absolute;
+      width: min(70vw, 280px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,170,255,0.15) 0%, transparent 70%);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes splashReveal {
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(0.9); opacity: 0.5; }
+      50%       { transform: scale(1.3); opacity: 1; }
+    }
+
+    /* ─── MAIN PAGE ─── */
+    #main {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--off-white);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+
+    #main.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Arrière-plan décoratif */
+    .bg-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-blob-1 {
+      width: 300px; height: 300px;
+      background: rgba(0,170,255,0.12);
+      top: -80px; left: -80px;
+    }
+    .bg-blob-2 {
+      width: 250px; height: 250px;
+      background: rgba(255,140,0,0.10);
+      bottom: -60px; right: -60px;
+    }
+    .bg-blob-3 {
+      width: 200px; height: 200px;
+      background: rgba(0,200,150,0.08);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ─── CARD ─── */
+    .card {
+      position: relative;
+      z-index: 1;
+      width: min(440px, 92vw);
       background: var(--white);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
       overflow: hidden;
-      height: auto;
-      max-height: 95vh;
-      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
 
-    .cover-section {
-      height: 120px;
-      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--orange) 100%);
+    /* Header gradient */
+    .card-header {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--green) 50%, var(--orange) 100%);
+      padding: 28px 24px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .header-company {
+      font-family: 'Comfortaa', cursive;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* App icon centered at bottom of header */
+    .app-icon-wrap {
+      position: absolute;
+      bottom: -42px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+    .app-icon {
+      width: 84px;
+      height: 84px;
+      border-radius: 22px;
+      border: 4px solid var(--white);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.20);
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Body */
+    .card-body {
+      padding: 52px 24px 24px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
-      padding-bottom: 45px;
-      position: relative;
+      gap: 0;
     }
 
-    .profile-box {
-      width: 90px;
-      height: 90px;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 4px solid var(--white);
-      box-shadow: var(--shadow);
-      background-color: var(--white);
-      position: absolute;
-      bottom: -45px;
-      z-index: 10;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
-    }
-
-    .profile-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .content-section {
-      padding: 60px 25px 30px;
-      background-color: var(--white);
-    }
-
-    .app-title {
+    .app-name {
       font-family: 'Comfortaa', cursive;
-      font-size: 1.8rem;
+      font-size: 1.65rem;
       font-weight: 700;
-      margin-bottom: 5px;
-      background: linear-gradient(90deg, var(--primary-blue), var(--orange));
+      background: linear-gradient(90deg, var(--blue), var(--orange));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      background-clip: text;
       text-align: center;
+      line-height: 1.2;
+      margin-bottom: 2px;
     }
 
     .company-name {
       font-family: 'Comfortaa', cursive;
-      font-size: 1rem;
-      color: var(--dark-gray);
-      margin-bottom: 25px;
+      font-size: 0.78rem;
+      color: var(--gray);
       font-weight: 500;
       text-align: center;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
     }
 
-    .page-subtitle {
-      font-family: 'Comfortaa', cursive;
-      font-size: 1.2rem;
+    .divider {
+      width: 40px;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--orange));
+      margin-bottom: 16px;
+    }
+
+    .description {
+      font-size: 0.82rem;
       color: var(--gray);
-      margin-bottom: 30px;
-      font-weight: 500;
+      line-height: 1.6;
       text-align: center;
+      padding: 0 4px;
+      margin-bottom: 22px;
     }
 
-    /* Navigation par onglets */
-    .tabs-container {
-      display: flex;
-      margin-bottom: 25px;
-      background: var(--light-gray);
-      border-radius: 12px;
-      padding: 5px;
-    }
-
-    .tab {
-      flex: 1;
-      padding: 12px 15px;
-      text-align: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-      color: var(--gray);
-    }
-
-    .tab.active {
-      background: var(--white);
-      color: var(--primary-blue);
-      box-shadow: var(--shadow-subtle);
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    /* Sections de contenu */
-    .info-section {
-      text-align: left;
-      margin-bottom: 25px;
-      background: var(--light-gray);
-      padding: 18px;
-      border-radius: 12px;
-      border-left: 4px solid var(--primary-blue);
-    }
-
-    .warning-section {
-      background: #fff8f8;
-      border-left: 4px solid var(--warning-red);
-    }
-
-    .success-section {
-      background: #f0fff4;
-      border-left: 4px solid var(--success-green);
-    }
-
-    .info-title {
-      font-weight: 600;
-      color: var(--dark-gray);
-      margin-bottom: 12px;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-    }
-
-    .info-title i {
-      margin-right: 8px;
-    }
-
-    .info-content {
-      font-size: 0.9rem;
-      color: var(--gray);
-      line-height: 1.5;
-    }
-
-    .data-list {
-      list-style-type: none;
-      margin: 12px 0;
-    }
-
-    .data-list li {
-      padding: 6px 0;
-      padding-left: 22px;
-      position: relative;
-      font-size: 0.9rem;
-    }
-
-    .data-list li:before {
-      content: "•";
-      color: var(--primary-blue);
-      position: absolute;
-      left: 8px;
-      font-weight: bold;
-    }
-
-    .procedure-box {
-      background-color: var(--light-blue);
-      border-radius: 12px;
-      padding: 18px;
-      margin: 20px 0;
-    }
-
-    .procedure-title {
-      font-weight: 600;
-      color: var(--dark-blue);
-      margin-bottom: 12px;
-      text-align: center;
-    }
-
-    .procedure-steps {
-      list-style-type: none;
-      counter-reset: step-counter;
-    }
-
-    .procedure-steps li {
-      padding: 10px 0;
-      padding-left: 35px;
-      position: relative;
-      font-size: 0.9rem;
-    }
-
-    .procedure-steps li:before {
-      counter-increment: step-counter;
-      content: counter(step-counter);
-      background: var(--primary-blue);
-      color: white;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      left: 0;
-      top: 10px;
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
-
-    .verification-info {
-      background: #fffaf0;
-      border: 1px solid #ffd699;
-      border-radius: 8px;
-      padding: 12px;
-      margin: 15px 0;
-      font-size: 0.85rem;
-    }
-
-    .verification-title {
-      font-weight: 600;
-      color: #e67e00;
-      margin-bottom: 5px;
-    }
-
-    /* Boutons */
-    .buttons-grid {
+    /* ─── BUTTONS ─── */
+    .buttons-wrap {
+      width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-top: 25px;
+      gap: 11px;
     }
 
-    .btn {
+    .dl-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 14px 15px;
-      border-radius: 10px;
+      gap: 12px;
+      padding: 13px 20px;
+      border-radius: var(--radius-btn);
       text-decoration: none;
-      font-family: 'Roboto', sans-serif;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-      box-shadow: var(--shadow-light);
-      border: none;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--white);
+      box-shadow: var(--shadow-btn);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+      position: relative;
+      overflow: hidden;
       cursor: pointer;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+      border: none;
+    }
+
+    .dl-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .dl-btn:hover  { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.22); }
+    .dl-btn:active { transform: translateY(0px);  box-shadow: var(--shadow-btn); filter: brightness(0.93); }
+
+    .btn-playstore { background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%); }
+    .btn-appstore  { background: linear-gradient(135deg, #2c2c2e 0%, #1c1c1e 100%); }
+    .btn-whatsapp  { background: linear-gradient(135deg, var(--whatsapp) 0%, var(--whatsapp-dark) 100%); }
+
+    .store-logo {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+      flex-shrink: 0;
+      filter: brightness(0) invert(1);
+    }
+
+    .btn-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      line-height: 1.15;
+    }
+
+    .btn-sub {
+      font-size: 0.65rem;
+      font-weight: 400;
+      opacity: 0.85;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-main {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .btn-wa-icon {
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+
+    /* Footer */
+    .card-footer {
+      padding: 14px 24px;
       text-align: center;
-    }
-
-    .btn:active {
-      transform: translateY(1px);
-      box-shadow: var(--shadow-subtle);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    .btn-whatsapp {
-      background-color: var(--whatsapp-green);
-      color: white;
-    }
-
-    .btn-whatsapp:hover {
-      background-color: var(--whatsapp-dark-green);
-    }
-
-    .btn-email {
-      background-color: var(--primary-blue);
-      color: white;
-    }
-
-    .btn-email:hover {
-      background-color: var(--dark-blue);
-    }
-
-    .btn-app {
-      background-color: var(--success-green);
-      color: white;
-    }
-
-    .btn-app:hover {
-      background-color: #219653;
-    }
-
-    .btn-icon {
-      margin-right: 8px;
-      font-size: 1.1rem;
-    }
-
-    .response-time {
-      font-size: 0.8rem;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      font-size: 0.68rem;
       color: var(--gray);
-      margin-top: 15px;
-      text-align: center;
-      font-style: italic;
     }
 
-    footer {
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid var(--light-gray);
-      font-size: 0.75rem;
-      color: var(--gray);
-      text-align: center;
+    /* ─── STAGGERED ENTRANCE ANIMATIONS ─── */
+    .card, .card-header, .card-body > *, .buttons-wrap > * {
+      animation-fill-mode: both;
     }
 
-    /* Ajustements pour très petits écrans */
-    @media (max-width: 480px) {
-      body {
-        padding: 10px;
-      }
-      
-      .main-container {
-        max-height: 95vh;
-        max-width: 100%;
-      }
-      
-      .cover-section {
-        height: 100px;
-        padding-bottom: 40px;
-      }
-      
-      .profile-box {
-        width: 80px;
-        height: 80px;
-        border-radius: 15px;
-        bottom: -40px;
-      }
-      
-      .content-section {
-        padding: 50px 18px 20px;
-      }
-      
-      .app-title {
-        font-size: 1.6rem;
-      }
-      
-      .page-subtitle {
-        font-size: 1.1rem;
-      }
-      
-      .tab {
-        padding: 10px 12px;
-        font-size: 0.85rem;
-      }
+    .anim-fade {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.55s ease forwards;
     }
 
-    /* Scrollbar personnalisée */
-    .main-container::-webkit-scrollbar {
-      width: 6px;
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .main-container::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
+    /* Responsive tweaks for very small screens */
+    @media (max-height: 640px) {
+      .card-header  { padding: 20px 20px 56px; }
+      .card-body    { padding: 44px 20px 18px; gap: 0; }
+      .description  { font-size: 0.78rem; margin-bottom: 16px; }
+      .buttons-wrap { gap: 9px; }
+      .dl-btn       { padding: 11px 18px; }
+      .app-name     { font-size: 1.45rem; }
+      .divider      { margin-bottom: 12px; }
     }
 
-    .main-container::-webkit-scrollbar-thumb {
-      background: var(--primary-blue);
-      border-radius: 10px;
+    @media (max-width: 360px) {
+      .card-body { padding-left: 16px; padding-right: 16px; }
     }
   </style>
 </head>
 <body>
-  <!-- Container principal avec largeur limitée -->
-  <div class="main-container">
-    <!-- Section couverture avec dégradé -->
-    <div class="cover-section">
-      <!-- Boîte de profil positionnée au milieu -->
-      <div class="profile-box">
-        <img src="icon.png" alt="Icône Horizon Education">
-      </div>
-    </div>
 
-    <!-- Section contenu -->
-    <div class="content-section">
-      <h1 class="app-title">Horizon Class</h1>
-      <p class="company-name">Horizon Education</p>
-      
-      <p class="page-subtitle">Gestion de votre compte et données</p>
+  <!-- ═══ SPLASH SCREEN ═══ -->
+  <div id="splash">
+    <div class="splash-pulse"></div>
+    <img class="splash-logo" src="L3.png" alt="Horizon Education">
+  </div>
 
-      <!-- Navigation par onglets -->
-      <div class="tabs-container">
-        <div class="tab active" data-tab="delete-account">Suppression de compte</div>
-        <div class="tab" data-tab="partial-delete">Suppression partielle</div>
-      </div>
+  <!-- ═══ MAIN PAGE ═══ -->
+  <div id="main">
+    <!-- Background blobs -->
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
 
-      <!-- Contenu suppression de compte -->
-      <div class="tab-content active" id="delete-account">
-        <div class="info-section warning-section">
-          <div class="info-title">
-            <i class="fas fa-exclamation-triangle"></i>
-            Attention - Action irréversible
-          </div>
-          <div class="info-content">
-            La suppression de votre compte est définitive. Toutes vos données personnelles, progression et historique seront définitivement effacés et ne pourront pas être récupérés.
-          </div>
+    <div class="card">
+      <!-- Header -->
+      <div class="card-header">
+        <p class="header-company">Horizon Education</p>
+        <div class="app-icon-wrap">
+          <img class="app-icon" src="icon.png" alt="Horizon Class">
         </div>
-
-        <div class="info-section">
-          <div class="info-title">
-            <i class="fas fa-check-circle"></i>
-            Méthodes de suppression disponibles
-          </div>
-          <div class="info-content">
-            Vous pouvez supprimer votre compte de deux manières :
-            <ul class="data-list">
-              <li><strong>Directement dans l'application</strong> (méthode recommandée)</li>
-              <li><strong>En nous contactant</strong> via WhatsApp ou email</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="procedure-box">
-          <div class="procedure-title">Procédure de suppression via contact</div>
-          <ol class="procedure-steps">
-            <li>Contactez-nous via WhatsApp ou email en utilisant les boutons ci-dessous</li>
-            <li>Un message pré-formaté sera généré pour vous</li>
-            <li>Complétez le message avec vos informations personnelles</li>
-            <li>Nous vérifierons votre identité pour des raisons de sécurité</li>
-            <li>Votre compte sera supprimé après confirmation</li>
-          </ol>
-        </div>
-
-        <div class="verification-info">
-          <div class="verification-title">Vérification d'identité requise</div>
-          <p>Pour confirmer que vous êtes bien le propriétaire du compte, nous vous demanderons de fournir :</p>
-          <ul class="data-list">
-            <li>Adresse email du compte</li>
-            <li>Nom d'utilisateur</li>
-            <li>Nom et prénom</li>
-            <li>Date de naissance</li>
-            <li>Établissement scolaire</li>
-          </ul>
-        </div>
-
-        <div class="buttons-grid">
-          <a href="https://wa.me/242061173738?text=Bonjour%20Horizon%20Education,%0A%0AJe%20souhaite%20demander%20la%20suppression%20définitive%20de%20mon%20compte%20Horizon%20Class.%0A%0A📋%20INFORMATIONS%20DU%20COMPTE%20:%0A•%20Adresse%20email%20:%20[VOTRE_EMAIL]%0A•%20Nom%20d'utilisateur%20:%20[VOTRE_NOM_UTILISATEUR]%0A•%20Mot%20de%20passe%20:%20[VOTRE_MOT_DE_PASSE]%0A%0A👤%20INFORMATIONS%20PERSONNELLES%20:%0A•%20Nom%20et%20prénom%20:%20[VOTRE_NOM_PRENOM]%0A•%20Date%20de%20naissance%20:%20[VOTRE_DATE_NAISSANCE]%0A•%20Établissement%20scolaire%20:%20[VOTRE_ECOLE]%0A%0A📝%20RAISON%20DE%20LA%20DEMANDE%20:%0A[PRÉCISEZ%20VOS%20RAISONS]%0A%0ACordialement," class="btn btn-whatsapp">
-            <i class="fab fa-whatsapp btn-icon"></i> Demander la suppression via WhatsApp
-          </a>
-          
-          <a href="mailto:info.horizoneducationtablet@gmail.com?subject=Demande%20de%20suppression%20de%20compte%20Horizon%20Class&body=Bonjour%20Horizon%20Education,%0A%0AJe%20souhaite%20demander%20la%20suppression%20définitive%20de%20mon%20compte%20Horizon%20Class.%0A%0A📋%20INFORMATIONS%20DU%20COMPTE%20:%0A•%20Adresse%20email%20:%20[VOTRE_EMAIL]%0A•%20Nom%20d'utilisateur%20:%20[VOTRE_NOM_UTILISATEUR]%0A•%20Mot%20de%20passe%20:%20[VOTRE_MOT_DE_PASSE]%0A%0A👤%20INFORMATIONS%20PERSONNELLES%20:%0A•%20Nom%20et%20prénom%20:%20[VOTRE_NOM_PRENOM]%0A•%20Date%20de%20naissance%20:%20[VOTRE_DATE_NAISSANCE]%0A•%20Établissement%20scolaire%20:%20[VOTRE_ECOLE]%0A%0A📝%20RAISON%20DE%20LA%20DEMANDE%20:%0A[PRÉCISEZ%20VOS%20RAISONS]%0A%0ACordialement," class="btn btn-email">
-            <i class="fas fa-envelope btn-icon"></i> Demander la suppression par email
-          </a>
-
-          <div class="btn btn-app">
-            <i class="fas fa-mobile-alt btn-icon"></i> Supprimer directement dans l'application
-          </div>
-        </div>
-
-        <p class="response-time">Le traitement des demandes de suppression prend généralement jusqu'à 48 heures, mais peut varier selon les circonstances.</p>
       </div>
 
-      <!-- Contenu suppression partielle -->
-      <div class="tab-content" id="partial-delete">
-        <div class="info-section">
-          <div class="info-title">
-            <i class="fas fa-info-circle"></i>
-            Suppression partielle des données
-          </div>
-          <div class="info-content">
-            Vous pouvez demander la suppression de certaines données spécifiques de votre compte sans supprimer l'intégralité de celui-ci.
-          </div>
-        </div>
+      <!-- Body -->
+      <div class="card-body">
 
-        <div class="info-section warning-section">
-          <div class="info-title">
-            <i class="fas fa-exclamation-triangle"></i>
-            Important à savoir
-          </div>
-          <div class="info-content">
-            <ul class="data-list">
-              <li>Certaines données sont essentielles au fonctionnement de l'application</li>
-              <li>La suppression de données vitales peut affecter votre expérience utilisateur</li>
-              <li>Nous nous réservons le droit de refuser les demandes qui impacteraient le service</li>
-              <li>Vous serez informé de l'approbation ou du refus de votre demande</li>
-            </ul>
-          </div>
-        </div>
+        <h1 class="app-name anim-fade" style="animation-delay:.1s">Horizon Class</h1>
+        <p class="company-name anim-fade" style="animation-delay:.18s">by Horizon Education</p>
+        <div class="divider anim-fade" style="animation-delay:.25s"></div>
 
-        <div class="info-section">
-          <div class="info-title">
-            <i class="fas fa-database"></i>
-            Données pouvant être supprimées partiellement
-          </div>
-          <div class="info-content">
-            <ul class="data-list">
-              <li>Photo de profil</li>
-              <li>Adresse physique</li>
-              <li>Historique de navigation spécifique</li>
-              <li>Certaines données de profil optionnelles</li>
-              <li>Contenu généré spécifique</li>
-            </ul>
-          </div>
-        </div>
+        <p class="description anim-fade" style="animation-delay:.32s">
+          Accède à tes cours, exercices, anciens sujets de Bac et ressources essentielles, et échange avec d'autres élèves partout au Congo, directement depuis ton téléphone.
+        </p>
 
-        <div class="procedure-box">
-          <div class="procedure-title">Procédure de demande de suppression partielle</div>
-          <ol class="procedure-steps">
-            <li>Contactez-nous en précisant les données que vous souhaitez supprimer</li>
-            <li>Nous évaluerons l'impact sur le fonctionnement de l'application</li>
-            <li>Vous recevrez une réponse sous 48 heures</li>
-            <li>Si approuvé, les données seront supprimées</li>
-            <li>Vous serez informé de la complétion de la demande</li>
-          </ol>
-        </div>
+        <!-- Buttons -->
+        <div class="buttons-wrap">
 
-        <div class="buttons-grid">
-          <a href="https://wa.me/242061173738?text=Bonjour%20Horizon%20Education,%0A%0AJe%20souhaite%20demander%20la%20suppression%20partielle%20de%20mes%20données%20sur%20Horizon%20Class.%0A%0A📋%20INFORMATIONS%20DU%20COMPTE%20:%0A•%20Adresse%20email%20:%20[VOTRE_EMAIL]%0A•%20Nom%20d'utilisateur%20:%20[VOTRE_NOM_UTILISATEUR]%0A%0A👤%20INFORMATIONS%20PERSONNELLES%20:%0A•%20Nom%20et%20prénom%20:%20[VOTRE_NOM_PRENOM]%0A%0A🗑️%20DONNÉES%20À%20SUPPRIMER%20:%0A[PRÉCISEZ%20LES%20DONNÉES%20QUE%20VOUS%20SOUHAITEZ%20SUPPRIMER]%0A%0A📝%20RAISON%20DE%20LA%20DEMANDE%20:%0A[PRÉCISEZ%20VOS%20RAISONS]%0A%0ACordialement," class="btn btn-whatsapp">
-            <i class="fab fa-whatsapp btn-icon"></i> Demande partielle via WhatsApp
+          <!-- Play Store -->
+          <a href="[LIEN_PLAYSTORE]" class="dl-btn btn-playstore anim-fade" style="animation-delay:.4s" target="_blank" rel="noopener">
+            <img class="store-logo" src="logo-playstore.png" alt="Play Store">
+            <div class="btn-text">
+              <span class="btn-sub">Disponible sur</span>
+              <span class="btn-main">Google Play Store</span>
+            </div>
           </a>
-          
-          <a href="mailto:info.horizoneducationtablet@gmail.com?subject=Demande%20de%20suppression%20partielle%20de%20données%20Horizon%20Class&body=Bonjour%20Horizon%20Education,%0A%0AJe%20souhaite%20demander%20la%20suppression%20partielle%20de%20mes%20données%20sur%20Horizon%20Class.%0A%0A📋%20INFORMATIONS%20DU%20COMPTE%20:%0A•%20Adresse%20email%20:%20[VOTRE_EMAIL]%0A•%20Nom%20d'utilisateur%20:%20[VOTRE_NOM_UTILISATEUR]%0A%0A👤%20INFORMATIONS%20PERSONNELLES%20:%0A•%20Nom%20et%20prénom%20:%20[VOTRE_NOM_PRENOM]%0A%0A🗑️%20DONNÉES%20À%20SUPPRIMER%20:%0A[PRÉCISEZ%20LES%20DONNÉES%20QUE%20VOUS%20SOUHAITEZ%20SUPPRIMER]%0A%0A📝%20RAISON%20DE%20LA%20DEMANDE%20:%0A[PRÉCISEZ%20VOS%20RAISONS]%0A%0ACordialement," class="btn btn-email">
-            <i class="fas fa-envelope btn-icon"></i> Demande partielle par email
-          </a>
-        </div>
 
-        <p class="response-time">Les demandes de suppression partielle sont traitées sous 48 heures. Vous serez informé de la décision.</p>
+          <!-- App Store / Costo -->
+          <a href="[LIEN_APPSTORE]" class="dl-btn btn-appstore anim-fade" style="animation-delay:.5s" target="_blank" rel="noopener">
+            <img class="store-logo" src="logo-appstore.png" alt="App Store">
+            <div class="btn-text">
+              <span class="btn-sub">Télécharger sur</span>
+              <span class="btn-main">App Store (Costo)</span>
+            </div>
+          </a>
+
+          <!-- WhatsApp Channel -->
+          <a href="[LIEN_WHATSAPP_CHANNEL]" class="dl-btn btn-whatsapp anim-fade" style="animation-delay:.6s" target="_blank" rel="noopener">
+            <i class="fab fa-whatsapp btn-wa-icon"></i>
+            <div class="btn-text">
+              <span class="btn-sub">Rejoindre notre</span>
+              <span class="btn-main">Chaîne WhatsApp</span>
+            </div>
+          </a>
+
+        </div>
       </div>
 
-      <footer>
-        <p>© 2025 Horizon Education - Horizon Class - Tous droits réservés</p>
-        <p>Cette page répond aux exigences de Google Play Store pour la gestion des données utilisateur</p>
-      </footer>
+      <!-- Footer -->
+      <div class="card-footer">
+        © 2025 Horizon Education · Tous droits réservés
+      </div>
     </div>
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Animation d'apparition douce
-      const container = document.querySelector('.main-container');
-      container.style.opacity = '0';
-      container.style.transform = 'translateY(20px)';
-      
+    // Afficher la page principale après l'animation du splash
+    window.addEventListener('load', () => {
       setTimeout(() => {
-        container.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        container.style.opacity = '1';
-        container.style.transform = 'translateY(0)';
-      }, 100);
-
-      // Gestion des onglets
-      const tabs = document.querySelectorAll('.tab');
-      const tabContents = document.querySelectorAll('.tab-content');
-
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          // Retirer la classe active de tous les onglets et contenus
-          tabs.forEach(t => t.classList.remove('active'));
-          tabContents.forEach(content => content.classList.remove('active'));
-          
-          // Activer l'onglet cliqué
-          tab.classList.add('active');
-          const tabId = tab.getAttribute('data-tab');
-          document.getElementById(tabId).classList.add('active');
-        });
-      });
-
-      // Empêcher l'action par défaut du bouton d'application
-      document.querySelector('.btn-app').addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('Pour supprimer votre compte directement dans l\'application, rendez-vous dans Paramètres → Mon compte → Supprimer le compte');
-      });
+        document.getElementById('splash').classList.add('hidden');
+        document.getElementById('main').classList.add('visible');
+      }, 2200);
     });
   </script>
 </body>
