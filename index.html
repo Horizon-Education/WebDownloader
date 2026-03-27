@@ -3,404 +3,297 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>Horizon Class - Télécharger l'application</title>
-  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <title>Horizon Class – Télécharger l'application</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --blue: #00aaff;
-      --dark-blue: #0077cc;
-      --orange: #ff8c00;
-      --green: #00c896;
-      --white: #ffffff;
-      --off-white: #f8faff;
-      --gray: #6b7a99;
-      --dark: #1a1f36;
-      --whatsapp: #25D366;
-      --whatsapp-dark: #128C7E;
-      --shadow-card: 0 20px 60px rgba(0, 120, 255, 0.15);
-      --shadow-btn: 0 8px 24px rgba(0,0,0,0.18);
-      --radius: 20px;
-      --radius-btn: 14px;
+      --blue:         #00aaff;
+      --dark-blue:    #0077cc;
+      --orange:       #ff8c00;
+      --lime:         #a4d1c6;
+      --white:        #ffffff;
+      --off-white:    #f4f7ff;
+      --gray:         #6b7a99;
+      --whatsapp:     #a4d1c6;
+      --whatsapp-dark:#128C7E;
+      --icon-size:    96px;      /* taille du logo app */
+      --icon-half:    48px;      /* moitié = dépassement de chaque côté */
+      --radius:       22px;
+      --radius-btn:   14px;
+      --shadow-card:  0 24px 70px rgba(0,120,255,0.13);
+      --shadow-btn:   0 8px 22px rgba(0,0,0,0.17);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin:0; padding:0; box-sizing:border-box; }
 
     html, body {
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-      font-family: 'Nunito', sans-serif;
-      background: #0a0f1e;
+      height:100%; overflow:hidden;
+      font-family:'Nunito', sans-serif;
+      background: var(--off-white);
     }
 
-    /* ─── SPLASH SCREEN ─── */
+    /* ══════════════════════════
+       SPLASH  (fond blanc)
+    ══════════════════════════ */
     #splash {
-      position: fixed;
-      inset: 0;
-      background: #0a0f1e;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      transition: opacity 0.7s ease, visibility 0.7s ease;
+      position:fixed; inset:0;
+      background: var(--white);
+      display:flex; align-items:center; justify-content:center;
+      z-index:200;
+      transition: opacity .7s ease, visibility .7s ease;
     }
+    #splash.hidden { opacity:0; visibility:hidden; pointer-events:none; }
 
-    #splash.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+    .splash-ring {
+      position:absolute;
+      width:min(62vw,240px); aspect-ratio:1;
+      border-radius:50%;
+      border:3px solid transparent;
+      background:
+        linear-gradient(white,white) padding-box,
+        linear-gradient(135deg,var(--blue),var(--lime),var(--orange)) border-box;
+      animation:spinRing 2s linear infinite;
     }
+    @keyframes spinRing { to { transform:rotate(360deg); } }
 
     .splash-logo {
-      width: min(70vw, 280px);
-      opacity: 0;
-      transform: scale(0.7);
-      animation: splashReveal 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+      width:min(52vw,200px);
+      opacity:0; transform:scale(.75);
+      animation:splashIn .9s cubic-bezier(.34,1.56,.64,1) .35s forwards;
+      position:relative; z-index:1;
     }
+    @keyframes splashIn { to { opacity:1; transform:scale(1); } }
 
-    .splash-pulse {
-      position: absolute;
-      width: min(70vw, 280px);
-      aspect-ratio: 1;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,170,255,0.15) 0%, transparent 70%);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes splashReveal {
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(0.9); opacity: 0.5; }
-      50%       { transform: scale(1.3); opacity: 1; }
-    }
-
-    /* ─── MAIN PAGE ─── */
+    /* ══════════════════════════
+       MAIN PAGE
+    ══════════════════════════ */
     #main {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--off-white);
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.7s ease, visibility 0.7s ease;
+      position:fixed; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; visibility:hidden;
+      transition: opacity .65s ease, visibility .65s ease;
     }
+    #main.visible { opacity:1; visibility:visible; }
 
-    #main.visible {
-      opacity: 1;
-      visibility: visible;
-    }
+    .blob { position:absolute; border-radius:50%; filter:blur(90px); pointer-events:none; }
+    .blob-1 { width:320px;height:320px; background:rgba(0,170,255,.10); top:-100px;  left:-100px; }
+    .blob-2 { width:260px;height:260px; background:rgba(255,140,0,.08);  bottom:-80px;right:-80px; }
+    .blob-3 { width:200px;height:200px; background:rgba(170,221,0,.07);  top:40%;    left:35%;   }
 
-    /* Arrière-plan décoratif */
-    .bg-blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      pointer-events: none;
-      z-index: 0;
-    }
-    .bg-blob-1 {
-      width: 300px; height: 300px;
-      background: rgba(0,170,255,0.12);
-      top: -80px; left: -80px;
-    }
-    .bg-blob-2 {
-      width: 250px; height: 250px;
-      background: rgba(255,140,0,0.10);
-      bottom: -60px; right: -60px;
-    }
-    .bg-blob-3 {
-      width: 200px; height: 200px;
-      background: rgba(0,200,150,0.08);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    /* ─── CARD ─── */
+    /* ── CARD ── */
     .card {
-      position: relative;
-      z-index: 1;
-      width: min(440px, 92vw);
-      background: var(--white);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-card);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      position:relative; z-index:1;
+      width:min(430px, 92vw);
+      background:var(--white);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow-card);
+      display:flex; flex-direction:column;
+      /* PAS de overflow:hidden → le logo peut dépasser librement */
     }
 
-    /* Header gradient */
+    /* ── HEADER ── */
     .card-header {
-      background: linear-gradient(135deg, var(--blue) 0%, var(--green) 50%, var(--orange) 100%);
-      padding: 28px 24px 64px;
-      position: relative;
-      overflow: hidden;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--lime) 50%, var(--orange) 100%);
+      border-radius: var(--radius) var(--radius) 0 0;
+      /* on réserve en bas exactement la moitié du logo */
+      padding: 22px 24px calc(var(--icon-half) + 10px);
+      position:relative;
+      display:flex; flex-direction:column; align-items:center;
+      overflow:visible;   /* ← laisse le logo déborder vers le bas */
     }
-
     .card-header::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      content:''; position:absolute; inset:0;
+      border-radius: var(--radius) var(--radius) 0 0;
+      background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='2' fill='%23ffffff' fill-opacity='0.07'/%3E%3C/svg%3E");
+      pointer-events:none;
     }
 
     .header-company {
-      font-family: 'Comfortaa', cursive;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.85);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      text-align: center;
-      position: relative;
-      z-index: 1;
+      font-family:'Comfortaa', cursive;
+      font-size:.72rem; font-weight:600;
+      color:rgba(255,255,255,.9);
+      letter-spacing:2.5px; text-transform:uppercase;
+      position:relative; z-index:1;
+      margin-bottom:4px;
     }
 
-    /* App icon centered at bottom of header */
+    /* ── ICON CHEVAUCHANT LES DEUX SECTIONS ── */
     .app-icon-wrap {
-      position: absolute;
-      bottom: -42px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
+      position:absolute;
+      bottom: calc(-1 * var(--icon-half));   /* dépasse de la moitié vers le bas */
+      left:50%; transform:translateX(-50%);
+      z-index:20;
     }
-
     .app-icon {
-      width: 84px;
-      height: 84px;
-      border-radius: 22px;
-      border: 4px solid var(--white);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.20);
-      object-fit: cover;
-      display: block;
+      width:  var(--icon-size);
+      height: var(--icon-size);
+      border-radius:22px;
+      border:4px solid var(--white);
+      box-shadow: 0 8px 28px rgba(0,0,0,.22);
+      object-fit:cover; display:block;
     }
 
-    /* Body */
+    /* ── BODY ── repoussé vers le bas de la moitié du logo + espace */
     .card-body {
-      padding: 52px 24px 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
+      padding: calc(var(--icon-half) + 18px) 24px 18px;
+      display:flex; flex-direction:column; align-items:center;
+      border-radius: 0 0 var(--radius) var(--radius);
+      background:var(--white);
     }
 
     .app-name {
-      font-family: 'Comfortaa', cursive;
-      font-size: 1.65rem;
-      font-weight: 700;
-      background: linear-gradient(90deg, var(--blue), var(--orange));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-align: center;
-      line-height: 1.2;
-      margin-bottom: 2px;
+      font-family:'Comfortaa', cursive;
+      font-size:1.6rem; font-weight:700;
+      background:linear-gradient(90deg, var(--blue), var(--orange));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text; text-align:center; margin-bottom:2px;
     }
 
     .company-name {
-      font-family: 'Comfortaa', cursive;
-      font-size: 0.78rem;
-      color: var(--gray);
-      font-weight: 500;
-      text-align: center;
-      letter-spacing: 0.5px;
-      margin-bottom: 16px;
+      font-family:'Comfortaa', cursive;
+      font-size:.72rem; color:var(--gray); font-weight:500;
+      letter-spacing:.5px; text-align:center; margin-bottom:14px;
     }
 
     .divider {
-      width: 40px;
-      height: 3px;
-      border-radius: 2px;
-      background: linear-gradient(90deg, var(--blue), var(--orange));
-      margin-bottom: 16px;
+      width:36px; height:3px; border-radius:2px;
+      background:linear-gradient(90deg, var(--blue), var(--lime), var(--orange));
+      margin-bottom:13px;
     }
 
     .description {
-      font-size: 0.82rem;
-      color: var(--gray);
-      line-height: 1.6;
-      text-align: center;
-      padding: 0 4px;
-      margin-bottom: 22px;
+      font-size:.80rem; color:var(--gray); line-height:1.65;
+      text-align:center; padding:0 4px; margin-bottom:20px;
     }
 
-    /* ─── BUTTONS ─── */
-    .buttons-wrap {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 11px;
-    }
+    /* ── BUTTONS ── */
+    .buttons-wrap { width:100%; display:flex; flex-direction:column; gap:10px; }
 
     .dl-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      padding: 13px 20px;
-      border-radius: var(--radius-btn);
-      text-decoration: none;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      font-size: 0.88rem;
-      color: var(--white);
-      box-shadow: var(--shadow-btn);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      border: none;
+      display:flex; align-items:center; gap:13px;
+      padding:12px 18px; border-radius:var(--radius-btn);
+      text-decoration:none; font-family:'Nunito', sans-serif;
+      font-weight:700; color:var(--white);
+      box-shadow:var(--shadow-btn);
+      transition:transform .2s ease, box-shadow .2s ease, filter .2s ease;
+      position:relative; overflow:hidden;
+      cursor:pointer; border:none;
     }
-
     .dl-btn::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%);
-      pointer-events: none;
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(180deg,rgba(255,255,255,.11) 0%,transparent 100%);
+      pointer-events:none;
     }
+    .dl-btn:hover  { transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.22); }
+    .dl-btn:active { transform:translateY(0); filter:brightness(.93); }
 
-    .dl-btn:hover  { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.22); }
-    .dl-btn:active { transform: translateY(0px);  box-shadow: var(--shadow-btn); filter: brightness(0.93); }
+    .btn-playstore { background:linear-gradient(135deg,#1a73e8 0%,#0d47a1 100%); }
+    .btn-appstore  { background:linear-gradient(135deg,#2c2c2e 0%,#111111 100%); }
+    .btn-whatsapp  { background:linear-gradient(135deg,var(--whatsapp) 0%,var(--whatsapp-dark) 100%); }
 
-    .btn-playstore { background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%); }
-    .btn-appstore  { background: linear-gradient(135deg, #2c2c2e 0%, #1c1c1e 100%); }
-    .btn-whatsapp  { background: linear-gradient(135deg, var(--whatsapp) 0%, var(--whatsapp-dark) 100%); }
+    /* logos en couleurs naturelles — pas de filtre blanc */
+    .store-logo { width:28px; height:28px; object-fit:contain; flex-shrink:0; }
 
-    .store-logo {
-      width: 26px;
-      height: 26px;
-      object-fit: contain;
-      flex-shrink: 0;
-      filter: brightness(0) invert(1);
-    }
+    .btn-text { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
+    .btn-sub  { font-size:.63rem; font-weight:400; opacity:.85; }
+    .btn-main { font-size:.88rem; font-weight:800; }
+    .btn-wa-icon { font-size:1.5rem; flex-shrink:0; }
 
-    .btn-text {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      line-height: 1.15;
-    }
-
-    .btn-sub {
-      font-size: 0.65rem;
-      font-weight: 400;
-      opacity: 0.85;
-      letter-spacing: 0.2px;
-    }
-
-    .btn-main {
-      font-size: 0.9rem;
-      font-weight: 700;
-    }
-
-    .btn-wa-icon {
-      font-size: 1.35rem;
-      flex-shrink: 0;
-    }
-
-    /* Footer */
+    /* ── FOOTER ── */
     .card-footer {
-      padding: 14px 24px;
-      text-align: center;
-      border-top: 1px solid rgba(0,0,0,0.05);
-      font-size: 0.68rem;
-      color: var(--gray);
+      padding:11px 24px; text-align:center;
+      border-top:1px solid rgba(0,0,0,.05);
+      font-size:.63rem; color:var(--gray);
+      border-radius: 0 0 var(--radius) var(--radius);
+      background:var(--white);
     }
 
-    /* ─── STAGGERED ENTRANCE ANIMATIONS ─── */
-    .card, .card-header, .card-body > *, .buttons-wrap > * {
-      animation-fill-mode: both;
-    }
-
+    /* ── ANIMATIONS ── */
     .anim-fade {
-      opacity: 0;
-      transform: translateY(16px);
-      animation: fadeUp 0.55s ease forwards;
+      opacity:0; transform:translateY(14px);
+      animation:fadeUp .5s ease forwards;
     }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
 
-    @keyframes fadeUp {
-      to { opacity: 1; transform: translateY(0); }
+    /* ── RESPONSIVE ── */
+    @media (max-height:660px) {
+      :root { --icon-size:80px; --icon-half:40px; }
+      .card-header { padding-top:16px; }
+      .app-icon    { border-radius:18px; }
+      .card-body   { padding-top:calc(var(--icon-half) + 14px); }
+      .app-name    { font-size:1.4rem; }
+      .description { font-size:.75rem; margin-bottom:14px; }
+      .buttons-wrap{ gap:8px; }
+      .dl-btn      { padding:10px 16px; }
     }
-
-    /* Responsive tweaks for very small screens */
-    @media (max-height: 640px) {
-      .card-header  { padding: 20px 20px 56px; }
-      .card-body    { padding: 44px 20px 18px; gap: 0; }
-      .description  { font-size: 0.78rem; margin-bottom: 16px; }
-      .buttons-wrap { gap: 9px; }
-      .dl-btn       { padding: 11px 18px; }
-      .app-name     { font-size: 1.45rem; }
-      .divider      { margin-bottom: 12px; }
-    }
-
-    @media (max-width: 360px) {
-      .card-body { padding-left: 16px; padding-right: 16px; }
+    @media (max-width:360px) {
+      .card-body { padding-left:16px; padding-right:16px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ═══ SPLASH SCREEN ═══ -->
+  <!-- ═══ SPLASH ═══ -->
   <div id="splash">
-    <div class="splash-pulse"></div>
-    <img class="splash-logo" src="L3.png" alt="Horizon Education">
+    <div class="splash-ring"></div>
+    <img class="splash-logo" src="L3.png" alt="Horizon Digital Africain">
   </div>
 
-  <!-- ═══ MAIN PAGE ═══ -->
+  <!-- ═══ PAGE PRINCIPALE ═══ -->
   <div id="main">
-    <!-- Background blobs -->
-    <div class="bg-blob bg-blob-1"></div>
-    <div class="bg-blob bg-blob-2"></div>
-    <div class="bg-blob bg-blob-3"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
 
     <div class="card">
-      <!-- Header -->
+
+      <!-- HEADER avec icône à cheval sur la séparation -->
       <div class="card-header">
-        <p class="header-company">Horizon Education</p>
+        <p class="header-company">Horizon Digital Africain</p>
+
+        <!-- Icône : moitié dans le dégradé, moitié dans la section blanche -->
         <div class="app-icon-wrap">
           <img class="app-icon" src="icon.png" alt="Horizon Class">
         </div>
       </div>
 
-      <!-- Body -->
+      <!-- BODY : espace en haut = moitié de l'icône -->
       <div class="card-body">
 
-        <h1 class="app-name anim-fade" style="animation-delay:.1s">Horizon Class</h1>
-        <p class="company-name anim-fade" style="animation-delay:.18s">by Horizon Education</p>
-        <div class="divider anim-fade" style="animation-delay:.25s"></div>
+        <h1 class="app-name anim-fade" style="animation-delay:.10s">Horizon Class</h1>
+        <p  class="company-name anim-fade" style="animation-delay:.18s">Horizon Digital Africain</p>
+        <div class="divider anim-fade" style="animation-delay:.24s"></div>
 
-        <p class="description anim-fade" style="animation-delay:.32s">
+        <p class="description anim-fade" style="animation-delay:.31s">
           Accède à tes cours, exercices, anciens sujets de Bac et ressources essentielles, et échange avec d'autres élèves partout au Congo, directement depuis ton téléphone.
         </p>
 
-        <!-- Buttons -->
         <div class="buttons-wrap">
 
-          <!-- Play Store -->
-          <a href="[LIEN_PLAYSTORE]" class="dl-btn btn-playstore anim-fade" style="animation-delay:.4s" target="_blank" rel="noopener">
-            <img class="store-logo" src="logo-playstore.png" alt="Play Store">
+          <a href="https://play.google.com/store/apps/details?id=com.horizoneducation.horizonclass&pcampaignid=web_share"
+             class="dl-btn btn-playstore anim-fade" style="animation-delay:.39s"
+             target="_blank" rel="noopener">
+            <img class="store-logo" src="logo-playstore.png" alt="Google Play">
             <div class="btn-text">
               <span class="btn-sub">Disponible sur</span>
               <span class="btn-main">Google Play Store</span>
             </div>
           </a>
 
-          <!-- App Store / Costo -->
-          <a href="[LIEN_APPSTORE]" class="dl-btn btn-appstore anim-fade" style="animation-delay:.5s" target="_blank" rel="noopener">
+          <a href="https://apps.apple.com/cg/app/horizon-class/id6754470109?l=fr-FR"
+             class="dl-btn btn-appstore anim-fade" style="animation-delay:.48s"
+             target="_blank" rel="noopener">
             <img class="store-logo" src="logo-appstore.png" alt="App Store">
             <div class="btn-text">
               <span class="btn-sub">Télécharger sur</span>
-              <span class="btn-main">App Store (Costo)</span>
+              <span class="btn-main">App Store</span>
             </div>
           </a>
 
-          <!-- WhatsApp Channel -->
-          <a href="[LIEN_WHATSAPP_CHANNEL]" class="dl-btn btn-whatsapp anim-fade" style="animation-delay:.6s" target="_blank" rel="noopener">
+          <a href="https://whatsapp.com/channel/0029Vb7e0L8ADTOHKXIk4Z1A"
+             class="dl-btn btn-whatsapp anim-fade" style="animation-delay:.57s"
+             target="_blank" rel="noopener">
             <i class="fab fa-whatsapp btn-wa-icon"></i>
             <div class="btn-text">
               <span class="btn-sub">Rejoindre notre</span>
@@ -411,20 +304,19 @@
         </div>
       </div>
 
-      <!-- Footer -->
-      <div class="card-footer">
-        © 2025 Horizon Education · Tous droits réservés
+      <div class="card-footer anim-fade" style="animation-delay:.65s">
+        © 2026 Horizon Digital Africain · Tous droits réservés
       </div>
+
     </div>
   </div>
 
   <script>
-    // Afficher la page principale après l'animation du splash
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('splash').classList.add('hidden');
         document.getElementById('main').classList.add('visible');
-      }, 2200);
+      }, 2300);
     });
   </script>
 </body>
